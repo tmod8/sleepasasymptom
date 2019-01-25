@@ -12,6 +12,5 @@ class Researcher(regInfo: RegistrationInfo) extends User{
   def getAccount(): Account = account
 
 
-  val studier = new Studier
 
 }
