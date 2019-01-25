@@ -1,0 +1,35 @@
+@(loginForm: Form[LoginInfo])(implicit messagesProvider: MessagesProvider)
+
+
+@main("Login", tab = "index") {
+
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-xl-5">
+        <div class="navbar-brand">SAAS</div>
+    </nav>
+
+    @if(loginForm.hasErrors) {
+        <div class="alert alert-error">
+            <a class="close" data-dismiss="alert">x</a>
+            @if(loginForm.errors.size > 0) {
+                @for(error <- loginForm.errors) {
+                    @error.message
+                }
+            } else {No error returned.}
+        </div>
+    }
+        <div class="container">
+            <div class="jumbotron mt-xl-5">
+                <div class="display-4 text-center mb-xl-4">Sleep As A Symptom</div>
+                <div class="container ">
+                @b4.horizontal.form(routes.Application.loginAttempt, "col-lg-2", "col-lg-6") { implicit vfc =>
+                    @b4.email(loginForm("email"), '_label -> "Email", 'placeholder -> "email@domain.com")
+                    @b4.password(loginForm("password"), '_label -> "Password", 'placeholder -> "password")
+                    @b4.submit('class -> "btn btn-secondary col-md-4 text-center") {
+                        <i class="fa fa-ok "></i> Login }
+                }
+                </div>
+            </div>
+        </div>
+
+}
