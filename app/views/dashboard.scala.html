@@ -1,4 +1,4 @@
-@(user: Account)
+@(user: User)
 
 @main("Dashboard", tab = "dashboard") {
     <nav class="navbar navbar-dark bg-dark sticky-top">
@@ -10,21 +10,39 @@
 
         </div>
     </nav>
+    <div class="container-fluid" style="height: 100vh">
+        <div class="row" style="height: 100vh">
+            <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+                <div class="sidebar-sticky">
+                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                        <span>Profile</span>
+                        <a class="d-flex align-items-center text-muted" href="#">
+                            <i class="fa fa-edit">Edit</i>
+                        </a>
+                    </h6>
+                    <ul class="list-group-flush flex-column">
+                        <li class="list-group-item">@user.getFullName</li>
+                        <li class="list-group-item">@user.getEmail</li>
+                    </ul>
+                    <hr class="mb-4">
+                    @if(Role.Supervisor == user.getRole || Role.Admin == user.getRole) {
+                        <button class="btn btn-lg btn-outline-secondary" type="button">Create New Study</button>
+                    }
+                </div>
+            </nav>
+            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 bg-white">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Dashboard</h1>
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                    </div>
+                </div>
+                <ul class="list-group-flush flex-column">
 
-    <div class="bg-light border-right border-dark d-flex align-items-start flex-column pl-2 pr-2 pb-5" style="height: 100vh; width: 30vh; float: left;">
+                </ul>
 
-            <div class="ml-1 mt-1 display-4">Profile</div>
-            <ul style="list-style:none">
-                <li class="mb-1"> @user.getFullName() </li>
-                <li> @user.getEmail() </li>
-            </ul>
-
-            <div type="button"  class="btn btn-lg btn-secondary flex-shrink-1 bd-highlight text-center mt-auto overflow-hidden">
-                Create New Study
-            </div>
-
-
-
+            </main>
+        </div>
     </div>
+
 
 }

@@ -10,7 +10,6 @@ resolvers += "Akka Snapshot Repository" at "http://repo.akka.io/snapshots/"
 
 resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
 
-routesImport += "models.Account"
       
 scalaVersion := "2.12.2"
 

@@ -20,13 +20,12 @@ class MockDb extends Database {
 
   def deleteUser(): Unit = ???
 
-  def updateUser(account: Account): Unit = ???
+  def updateUser(account: User): Unit = ???
 
   def checkCredentials(email: String, pw: String): Boolean = {
     var correct = false
     for (user <- users) {
-      val acct = user.getAccount()
-      if (acct.getEmail() == email && acct.getPassword() == pw) {
+      if (user.getEmail == email) {
         loggedIn += user
         correct = true
       }
@@ -34,7 +33,7 @@ class MockDb extends Database {
     correct
   }
 
-  def getCurrentUser(): User = {
+  def getCurrentUser: User = {
     loggedIn.head
   }
 
