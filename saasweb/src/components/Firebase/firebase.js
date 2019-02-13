@@ -1,5 +1,6 @@
 import app from 'firebase/app';
 import 'firebase/auth';
+import 'firebase/database';
 
   // Initialize Firebase
   const config = {
@@ -16,6 +17,7 @@ import 'firebase/auth';
           app.initializeApp(config);
 
           this.auth = app.auth();
+          this.db = app.database();
       }
 
     // *** Auth API ***
@@ -28,5 +30,7 @@ import 'firebase/auth';
     doSignOut = () => this.auth.signOut();
 
     doPasswordReset = email => this.auth.sendPasswordResetEmail(email);
+
+    query = table => this.db.ref(`${ table }`);
   }
   export default Firebase;
