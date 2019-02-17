@@ -1,62 +1,64 @@
-import React, { Component } from 'react';
+import React, { Component} from 'react';
 import {
     ButtonToolbar,
-    ListGroup
+    Nav,
+    NavItem,
+    NavLink
 } from 'reactstrap';
 
-import { withFirebase } from '../Firebase';
+import CreateStudy from '../CreateStudy';
+import ViewStudies from '../ViewStudies';
+import Profile from '../Profile';
+
+import { Route, Switch, Link } from 'react-router-dom';
+
+import * as ROUTES from '../../constants/routes';
+
+var navStyle = { 
+    padding: '15px', 
+    display: 'inline-block', 
+    lineHeight: '20px' 
+};
+
+
 
 class MainPanel extends Component {
     constructor(props) {
         super(props);
-
-        this.state ={
-            loading: false,
-            query: []
-        };
     }
 
-    componentDidMount() {
-        this.setState({ loading:true });
-
-
-        this.props.firebase.query('users').on('value', snapshot => {
-            const queryObj = snapshot.val();
-
-            const queryList = Object.keys(queryObj).map(key => ({
-                ...queryObj[key],
-                uid: key,
-              }));
-
-            this.setState({
-                query: queryList,
-                loading: false
-            });
-        });
-    }
-
-    componentWillUnmount() {
-        this.props.firebase.query('users').off();
-      }
+    
 
     render() {
-        const {
-            query,
-            loading
-        } = this.state;
         return(
             <main role="main" className="col-md-9 ml-sm-auto col-lg-10 px-4 bg-white">
-                <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                    <h1 className="h2">Dashboard</h1>
-                    <ButtonToolbar className="mb-2 mb-md-0"></ButtonToolbar>
-                    {loading && <div>Loading...</div>}
+                <div>
+                    <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h1 className="h2">Dashboard</h1>
+                        <Nav>
+                            <NavItem style={ navStyle } active>
+                                    <Link to={ROUTES.VIEW_STUDIES}>Studies</Link>    
+                            </NavItem>
+                            <NavItem style={ navStyle }>
+                                <Link to={ROUTES.PROFILE}>Profile</Link>
+                                
+                                
+                            </NavItem>
+                        </Nav>
+                        {/* may use for filtering <ButtonToolbar className="mb-2 mb-md-0"></ButtonToolbar>*/}
+                    </div>
+                    <Switch>
+                        
+                        <Route path={ROUTES.CREATE_STUDY} component={CreateStudy} />
+                        <Route path={ROUTES.VIEW_STUDIES} component={ViewStudies} />
+                        <Route path={ROUTES.PROFILE} component={Profile} />      
+                        <Route component={ViewStudies} />
+                    </Switch>
                 </div>
-                <ul>{query.map(q => (<li key={q.uid}>{q.uid}</li>))}</ul>
-                <ListGroup flush className="flex-column"></ListGroup>
-
             </main>
         );
     }
+    
 }
 
-export default withFirebase(MainPanel);
+export default MainPanel;

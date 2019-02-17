@@ -52,13 +52,22 @@ class RegistrationFormBase extends Component {
       };
 
     onSubmit = event => {
-        const { email, password } = this.state;
+        const { firstName, lastName, email, password } = this.state;
         
         this.props.firebase
             .doCreateUserWithEmailAndPassword(email, password)
             .then(authUser => {
+                return this.props.firebase
+                .researchers(authUser.user.uid)
+                .set({
+                    firstName,
+                    lastName,
+                    email
+                })
+            })
+            .then(() => {
                 this.setState({...INITIAL_STATE});
-                this.props.history.push(ROUTES.DASHBOARD);
+                this.props.history.push(ROUTES.VIEW_STUDIES);
             })
             .catch(error => {
                 this.setState({ error });

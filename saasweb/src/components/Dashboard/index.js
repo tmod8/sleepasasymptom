@@ -1,19 +1,27 @@
 import React from 'react';
-
 import {
     Container,
     Row
-} from 'reactstrap'
+} from 'reactstrap';
+import MainPanel from '../MainPanel';
 
 import { withAuthorization } from '../Session';
+import { withRouter } from 'react-router-dom';
+
+import StudyResearchers from '../StudyResearchers';
+
+import * as ROUTES from '../../constants/routes';   
+
+import { Route } from 'react-router-dom';
 
 import Sidebar from '../Sidebar';
-import MainPanel from '../MainPanel';
 
 const Dashboard = () => (
     <Container fluid style={{height: "100vh"}}>
         <Row style={{height: "100vh"}}>
-            <Sidebar />
+            
+            
+            <Sidebar /> 
             <MainPanel />
         </Row>
     </Container>
@@ -22,4 +30,4 @@ const Dashboard = () => (
 
 const condition = authUser => !!authUser;
 
-export default withAuthorization(condition)(Dashboard);
+export default withAuthorization(condition)(withRouter(Dashboard));

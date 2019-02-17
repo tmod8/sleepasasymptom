@@ -27,10 +27,22 @@ import 'firebase/database';
     doSignInWithEmailAndPassword = (email, password) =>
         this.auth.signInWithEmailAndPassword(email, password);
 
+    getAuthUserId = () =>
+      this.auth.onAuthStateChanged((user) => {
+        if (user) {
+          return user.uid;
+        } else {
+          return null;
+        }
+      });
+
+
     doSignOut = () => this.auth.signOut();
 
     doPasswordReset = email => this.auth.sendPasswordResetEmail(email);
 
     query = table => this.db.ref(`${ table }`);
+    researchers = (uid) => this.db.ref(`researchers/${ uid }`);
+    study = (id) => this.db.ref(`study/${ id }`);
   }
   export default Firebase;
