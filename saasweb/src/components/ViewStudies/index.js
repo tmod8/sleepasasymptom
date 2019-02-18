@@ -8,10 +8,13 @@ import {
     ListGroupItemHeading,
     ListGroupItemText,
     Spinner,
-    Badge
+    Badge,
+    Button
 } from 'reactstrap';
 
 import * as ROUTES from '../../constants/routes';
+import * as STATUS from '../../constants/status';
+import * as ROLES from '../../constants/roles';
 
 
 class ViewStudies extends Component {
@@ -23,7 +26,8 @@ class ViewStudies extends Component {
             studies: null,
             allStudies: null,
             auth: this.props.firebase.auth.currentUser,
-            selected: null
+            selected: null,
+            currentUser: null
         };
     }
 
@@ -43,8 +47,21 @@ class ViewStudies extends Component {
             await this.setState({
                 allStudies: studyList
             });
+            this.getUser()
             this.getMyStudies()
         });
+    }
+
+    getUser = () => {
+        this.props.firebase.researchers(this.props.firebase.auth.currentUser.uid).once('value', async snapshot => {
+            const user = snapshot.val()
+
+            if (!!user) {
+                await this.setState({
+                    currentUser: user
+                })
+            }
+        })
     }
 
     getMyStudies = () => {
@@ -78,7 +95,8 @@ class ViewStudies extends Component {
         const {
             studies,
             loading,
-            selected
+            selected,
+            currentUser
         } = this.state;
 
         return(
@@ -89,8 +107,7 @@ class ViewStudies extends Component {
                     <ListGroupItem active={study.uid === selected ? true : false} tag="button" key={ study.uid } value={study.uid} color="info" action onClick={ this.onClickStudy }>
                         <ListGroupItemHeading>
                             { study.name + ' ' }
-                            <Badge pill color={ study.status==="active" ? "success" : "danger" }>{ study.status }</Badge>
-
+                            <Badge pill color={ study.status===STATUS.ACTIVE ? "success" : "danger" }>{ study.status }</Badge>
                         </ListGroupItemHeading>
                         <ListGroupItemText>{ study.desc }</ListGroupItemText>
                     </ListGroupItem>

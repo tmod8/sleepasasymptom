@@ -15,6 +15,8 @@ import StudyResearchers from '../StudyResearchers';
 
 import * as ROUTES from '../../constants/routes';
 
+import * as ROLES from '../../constants/roles';
+
 class Sidebar extends Component {
     constructor(props) {
         super(props);
@@ -64,8 +66,9 @@ class Sidebar extends Component {
                     
                     <Route path={ROUTES.VIEW_STUDIES} component={StudyResearchers} />
                     <hr className="mb-4" />
-                    <Button outline color="secondary" size="lg" onClick={this.onClick }>Create New Study</Button>
-
+                    {!!user && (user.role === ROLES.ADMIN || user.role === ROLES.SUPERVISOR) && (
+                        <Button outline color="secondary" size="lg" onClick={this.onClick }>Create New Study</Button>
+                    )}
                 </div>
             </Col>
         );

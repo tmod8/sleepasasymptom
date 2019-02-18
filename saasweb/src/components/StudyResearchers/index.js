@@ -18,6 +18,9 @@ import {
 
 import { withFirebase } from '../Firebase';
 
+import * as ROLES from '../../constants/roles';
+import * as STATUS from '../../constants/status';
+
 class StudyResearchers extends Component {
     constructor(props) {
         super(props);
@@ -29,11 +32,13 @@ class StudyResearchers extends Component {
             loading: false,
             email: '',
             addedUser: null,
-            study: null
+            study: null,
+            currentUser: null
         }
     }
 
     componentDidMount() {
+        this.getUser()
         this.getUpdate()
          
     }
@@ -48,12 +53,20 @@ class StudyResearchers extends Component {
                     researcherIds: study.researchers,
                     researchers: null
                 });
-                console.log(this.state.researchers)
                 this.getIds()
             }
         });
     }
 
+    getUser =  () => {
+        this.props.firebase.researchers(this.props.firebase.auth.currentUser.uid).once('value', async snapshot =>{
+            var user = snapshot.val()
+            if (!!user) {
+                await this.setState({currentUser: user})
+            }
+
+        })
+    }
     getIds = async  () => {
         if (!!this.state.researcherIds) {
             var list = []
@@ -61,10 +74,12 @@ class StudyResearchers extends Component {
              this.state.researcherIds.forEach( async researcher => {
                 await this.props.firebase.researchers(researcher).once('value', childSnapshot => {
                     obj = childSnapshot.val()
+                    console.log(obj)
                     obj = Object.assign({"uid": researcher}, obj)
+
                 });
                 list.push(obj)
-                console.log(list[1])
+                console.log(list)
                 
                 await this.setState({researchers: list});
             });
@@ -80,7 +95,6 @@ class StudyResearchers extends Component {
     }
 
     onChange = event => {
-        console.log(event.target)
         this.setState({ [event.target.name]: event.target.value });
     }
 
@@ -131,19 +145,33 @@ class StudyResearchers extends Component {
         }
     }
 
+    archiveStudy = () => {
+        this.props.firebase
+            .study(this.props.location.search.split('=')[1])
+            .update({
+                status: STATUS.ARCHIVED
+            })
+    }
+
     render() {
         const {
             owner,
             researchers,
-            email
+            email,
+            currentUser,
+            study
         } = this.state;
        
         return (
             <>
+                {!!currentUser && !!study && (currentUser.role === ROLES.ADMIN && study.status===STATUS.ACTIVE) && (
+                    <Button color="danger" onClick={this.archiveStudy}>archive</Button>
+                )} {' '}
+                <Button  color="info">info</Button>
                 <span className="d-flex align-items-center text-muted mb-2">
                     Researchers
                 </span>
-                {!!researchers && (
+                {!!researchers && !!currentUser && (currentUser.role === ROLES.ADMIN || currentUser.role === ROLES.SUPERVISOR) && (
                     <Form onSubmit={this.onSubmit} className="mb-3 p-2">
                     <InputGroup >
                             <Input plaintext={!researchers} className="form-control" name="email" type="text" onChange={this.onChange} value={email} placeholder="Researcher's email"/>
@@ -155,7 +183,7 @@ class StudyResearchers extends Component {
                 )}
                 {!researchers && <div>Loading...<Spinner color="secondary" /></div>}
                 <ListGroup className="flex-column">
-                {!!researchers && (researchers.map((researcher) =>
+                {!!researchers &&  (researchers.map((researcher) =>
                     <ListGroupItem key={researcher.uid} action>
                         {researcher.firstName + ' ' + researcher.lastName + ' ' }
                         {(owner === researcher.uid) ? <Badge pill color="warning">owner</Badge>: null}

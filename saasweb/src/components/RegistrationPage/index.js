@@ -38,6 +38,7 @@ const INITIAL_STATE = {
     email: '',
     password: '',
     confirmPassword: '',
+    role: 'researcher',
     error: null
 };
 
@@ -52,7 +53,7 @@ class RegistrationFormBase extends Component {
       };
 
     onSubmit = event => {
-        const { firstName, lastName, email, password } = this.state;
+        const { firstName, lastName, email, password, role } = this.state;
         
         this.props.firebase
             .doCreateUserWithEmailAndPassword(email, password)
@@ -62,7 +63,8 @@ class RegistrationFormBase extends Component {
                 .set({
                     firstName,
                     lastName,
-                    email
+                    email,
+                    role
                 })
             })
             .then(() => {

@@ -8,12 +8,6 @@ import MainPanel from '../MainPanel';
 import { withAuthorization } from '../Session';
 import { withRouter } from 'react-router-dom';
 
-import StudyResearchers from '../StudyResearchers';
-
-import * as ROUTES from '../../constants/routes';   
-
-import { Route } from 'react-router-dom';
-
 import Sidebar from '../Sidebar';
 
 const Dashboard = () => (

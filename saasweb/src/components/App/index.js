@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 import { withAuthentication } from '../Session';
 
@@ -7,13 +7,8 @@ import Navigation from '../Navigation';
 import LoginPage from '../LoginPage';
 import Dashboard from '../Dashboard';
 import RegistrationPage from '../RegistrationPage';
-import Profile from '../Profile';
-import CreateStudy from '../CreateStudy';
-import ViewStudies from '../ViewStudies';
 
 import * as ROUTES from '../../constants/routes';
-
-import StudyResearchers from '../StudyResearchers';
 
 
 
