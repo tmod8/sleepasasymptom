@@ -5,14 +5,7 @@ import 'firebase/storage'
 import {signOut} from './actions/authActions'
 
   // Initialize Firebase
-  const config = {
-    apiKey: "AIzaSyBPrRWQxgcirVgQSdyt4Oy5ESCsRBwZQys",
-    authDomain: "sleepasasymptom.firebaseapp.com",
-    databaseURL: "https://sleepasasymptom.firebaseio.com",
-    projectId: "sleepasasymptom",
-    storageBucket: "sleepasasymptom.appspot.com",
-    messagingSenderId: "981585540799"
-  };
+  //deleted api key because this is public repo
   app.initializeApp(config);
 
   export const authRef = app.auth()
