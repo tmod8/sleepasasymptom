@@ -5,7 +5,8 @@ import 'firebase/storage'
 import {signOut} from './actions/authActions'
 
   // Initialize Firebase
-  //deleted because its on a public repo
+  //deleted api key because its on a public repo
+  //const config = {...api key};
   app.initializeApp(config);
 
   export const authRef = app.auth()
