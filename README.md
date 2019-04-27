@@ -22,6 +22,36 @@ N/A
    - Exporting to CSV is missing
 
 # Install Guide
+## Dependencies
+
+- twbs / bootstrap ^ 4.3.0
+
+- firebase / firebase-js-sdk firebase ^ 5.8.2
+
+- facebook / prop-types ^ 15.7.2
+
+- facebook / react ^ 16.8.1
+
+- facebook / react react-dom ^ 16.8.1
+
+- reduxjs / react-redux ^ 6.0.1
+
+- ReactTraining / react-router react-router-dom ^ 4.3.1
+
+- facebook / create-react-app react-scripts ^2.1.5
+
+- Vashnak / react-toasts ^ 3.0.2
+
+- reactstrap / reactstrap ^ 7.1.0
+
+- acdlite / recompose ^ 0.30.0
+
+- reduxjs / redux ^ 4.0.1
+
+- rt2zz / redux-persist ^ 5.10.0
+
+- reduxjs / redux-thunk
+
 ## Run project Locally
 
 If you have just cloned the project, in the '../saasweb/' directory run 'npm install' to install all dependencies. 
