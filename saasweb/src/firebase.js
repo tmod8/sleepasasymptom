@@ -6,12 +6,7 @@ import {signOut} from './actions/authActions'
 
   // Initialize Firebase
   const config = {
-    apiKey: "AIzaSyBPrRWQxgcirVgQSdyt4Oy5ESCsRBwZQys",
-    authDomain: "sleepasasymptom.firebaseapp.com",
-    databaseURL: "https://sleepasasymptom.firebaseio.com",
-    projectId: "sleepasasymptom",
-    storageBucket: "sleepasasymptom.appspot.com",
-    messagingSenderId: "981585540799"
+    //removed for privacy add from console
   };
   app.initializeApp(config);
 
