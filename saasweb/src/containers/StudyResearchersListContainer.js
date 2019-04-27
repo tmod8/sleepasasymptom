@@ -1,4 +1,5 @@
 import {connect} from 'react-redux'
+import {removeResearcherFromStudy} from '../actions/studyActions'
 import StudyResearchersList from '../components/StudyResearchersList'
 
 /*
@@ -24,14 +25,23 @@ const mapStateToProps = state => {
                 state.studies.members[state.studies.selected]!==undefined ?
                     state.studies.members[state.studies.selected].owner 
                 : ''
-            : ''
+            : '',
+        studyId: !!state.studies.selected ? state.studies.selected : ''
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        removeResearcher: (studyId, researcher) => {
+            dispatch(removeResearcherFromStudy(studyId, researcher))
+        }
     }
 }
 
 
 const StudyResearchersListContainer = connect(
     mapStateToProps,
-    null
+    mapDispatchToProps
 ) (StudyResearchersList)
 
 export default StudyResearchersListContainer

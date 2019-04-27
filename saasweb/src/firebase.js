@@ -18,6 +18,7 @@ import {signOut} from './actions/authActions'
   export const authRef = app.auth()
   export const researcherRef = app.database().ref("researchers")
   export const studiesRef = app.database().ref("study")
+  export const healthDataRef = app.database().ref("health_data")
   export const storageRef = app.storage().ref()
   
   export const EMAIL_PASSWORD_SIGN_IN_METHOD = app.auth.EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD

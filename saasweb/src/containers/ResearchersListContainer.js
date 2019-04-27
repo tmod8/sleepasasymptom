@@ -18,9 +18,9 @@ const mapStateToProps = state => {
         selected: state.researchers.selected===undefined? '' : state.researchers.selected,
         currentUser: getCurrentUser(state),
         colorMap: {
-            "admin": "danger",
-            "supervisor": "warning",
-            "researcher": "success"
+            admin: "danger",
+            supervisor: "warning",
+            researcher: "success"
         }
     }
 }

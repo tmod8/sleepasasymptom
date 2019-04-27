@@ -3,20 +3,33 @@ import {
     ListGroupItem,
     ListGroupItemHeading,
     ListGroupItemText,
-    Badge
+    Badge,
+    Card,
+    CardTitle,
+    CardText
 } from 'reactstrap'
-import * as STATUS from '../constants/status'
 import PropTypes from 'prop-types'
+import * as STATUS from '../constants/status'
 
 const Study = ({studyInfo}) => (
-    <ListGroupItem active={studyInfo.id === studyInfo.selected ? true : false} tag="button" color="info" action onClick={() => {
+    <ListGroupItem  active={studyInfo.id === studyInfo.selected ? true : false} tag="button" color="info" action onClick={() => {
             studyInfo.onClick(studyInfo.id)
+            if (!!studyInfo.study.participants) {
+                studyInfo.fetchDataForExport(studyInfo.study.participants)
+            }
+            if (studyInfo.calculateLifetime(studyInfo.study.dateCreated) > 60) {
+                studyInfo.changeStatus(studyInfo.id, STATUS.INACTIVE)
+            }
         }}>
-        <ListGroupItemHeading>
-            { studyInfo.study.studyName + ' ' }
-            <Badge pill color={ studyInfo.study.status===STATUS.ACTIVE ? "success" : "danger" }>{ studyInfo.study.status }</Badge>
-        </ListGroupItemHeading>
-        <ListGroupItemText>{ studyInfo.study.description }</ListGroupItemText>
+            <span className="d-flex align-items-left flex-column">
+                <h5 className="mb-0">
+                    <span className="mr-1">{studyInfo.study.studyName }</span>
+                    <Badge pill color={ studyInfo.colorMap[studyInfo.study.status] }>{ studyInfo.study.status }</Badge> 
+                    <Badge color="light" className="float-right ml-5">{'Lifetime: ' + studyInfo.calculateLifetime(studyInfo.study.dateCreated) + ' days'}</Badge>
+                    <Badge color="light" className="float-right ml-5">{'Participants: ' + (!!studyInfo.study.participants ? Object.keys(studyInfo.study.participants).length : 0)}</Badge>
+                </h5>
+                <p className="mb-0">{studyInfo.study.description}</p>
+            </span>
     </ListGroupItem>
 )
 

@@ -1,14 +1,18 @@
 import React from 'react'
 import {
     ListGroupItem,
-    Badge
+    Badge,
+    Button
 } from 'reactstrap'
 import PropTypes from 'prop-types'
 
 const Researcher = ({researcherInfo}) => (
-    <ListGroupItem action>
+    <ListGroupItem>
         <span className="d-flex flex-column" >
-            <h5 className="mb-0">{researcherInfo.researcher.firstName + ' ' + researcherInfo.researcher.lastName} </h5>
+            <h5 className="mb-0">
+                {researcherInfo.researcher.firstName + ' ' + researcherInfo.researcher.lastName} 
+                {researcherInfo.researcher.uid !== researcherInfo.owner && <Button close onClick={() => {researcherInfo.removeResearcher(researcherInfo.studyId, researcherInfo.researcher.uid)}}/>}
+            </h5>
             <p className="mb-0">{researcherInfo.researcher.affiliation}</p>
         </span>
         {!!researcherInfo.owner && (researcherInfo.owner === researcherInfo.researcher.uid) ? <Badge pill color="warning">owner</Badge>: null}

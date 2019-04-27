@@ -21,7 +21,7 @@ const ResearcherActionBar = ({changeRole, currentUser, selectedUser, promotionRo
                 <InviteResearcherContainer />
             </>
         )}
-        {!!currentUser && !!selectedUser.uid && (currentUser.role === ROLES.ADMIN && selectedUser.role !== ROLES.ADMIN) && (
+        {!!currentUser && !!selectedUser.uid && (currentUser.role === ROLES.ADMIN) && (
             <>
                 <hr className="mb-4" />
                 <UncontrolledButtonDropdown className="m-1">
@@ -40,7 +40,7 @@ const ResearcherActionBar = ({changeRole, currentUser, selectedUser, promotionRo
                         ))}
                     </DropdownMenu>
                 </UncontrolledButtonDropdown>
-                <Button className="m-1" color="secondary" outline>Suspend</Button>
+                {/*<Button className="m-1" color="secondary" outline>Suspend</Button>*/}
             </>
         )} 
         

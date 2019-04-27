@@ -31,7 +31,9 @@ export const initialState = {
         selectedDropdown: '',
         minAge: 0,
         maxAge: 0,
-        informedConsent: null
+        informedConsent: null,
+        formUrl: null,
+        showModal: false
     },
     auth: {
         signedIn: false,

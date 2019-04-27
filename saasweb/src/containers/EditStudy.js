@@ -1,17 +1,11 @@
 import {connect} from 'react-redux'
-import CreateStudyForm from '../components/CreateStudyForm'
-import {goToStudiesList} from '../actions/redirectActions'
-import {formChange, selectDropdownItem, addAgeConstraint, addOtherConstraint, clearConstraint, clearForm, unselectDropdownItem} from '../actions/formActions'
-import {createStudy} from '../actions/studyActions'
+import EditStudyForm from '../components/EditStudyForm'
+import {clearForm, formChange, initializeEditStudy, addOtherConstraint, addAgeConstraint, selectDropdownItem, clearConstraint, unselectDropdownItem} from '../actions/formActions'
 import { withRouter } from 'react-router-dom';
+import {goToStudiesList} from '../actions/redirectActions'
+import {getInformedConsent} from '../actions/fileActions'
+import {editStudy} from '../actions/studyActions'
 import * as CONSTRAINTS from '../constants/constraints'
-
-const getDate = () => {
-    let date = new Date()
-    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    return days[date.getUTCDay()] + ' ' +  (date.getUTCMonth() + 1) + '/' + date.getUTCDate() + '/' + date.getUTCFullYear() 
-        + ' ' +  date.getUTCHours() + ':' + date.getUTCMinutes() + ':' + date.getUTCSeconds() + ' UTC';
-}
 
 const style = {
     listStyleType: "none"
@@ -24,28 +18,41 @@ const constraintOptions = constraints => {
     }
     return {[CONSTRAINTS.OPTIONS.AGE]: CONSTRAINTS.AGE, [CONSTRAINTS.OPTIONS.GENDER]: CONSTRAINTS.GENDER, [CONSTRAINTS.OPTIONS.RACE]: CONSTRAINTS.RACE}
 }
- 
+
+
+
 const mapStateToProps = state => {
     return {
-        form: state.form,
-        error: state.studies.error,
-        uid: state.auth.uid,
+        form: state.form, 
+        study: !!state.studies.members ?
+            state.studies.members[state.studies.selected]!==undefined ? state.studies.members[state.studies.selected] : {}
+        :
+            {},
+        informedConsent: !!state.studies.selected ? getInformedConsent(state.studies.selected) : null,
         constraintOptions: constraintOptions(state.form.constraints),
-        style
+        selectedStudy: !!state.studies.selected ? state.studies.selected : '',
+        style,
+        error: state.studies.error
+    
+
     }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
-        onClick: () => {
-            dispatch(goToStudiesList(ownProps))
-            dispatch(clearForm())
-        },
         onChange: (field, value) => {
             dispatch(formChange(field, value))
         },
-        onSubmit: (studyInfo, uid) => {
-            dispatch(createStudy(studyInfo, getDate(), uid, ownProps))
+        onEdit: (info) => {
+            dispatch(initializeEditStudy(info))
+        },
+        onCancel: () => {
+            dispatch(clearForm())
+            dispatch(goToStudiesList(ownProps))
+        },
+        onSubmit: (info) => {
+            dispatch(editStudy(info, ownProps))
+            dispatch(clearForm())
         },
         selectDropdown: (item) => {
             dispatch(selectDropdownItem(item))
@@ -61,12 +68,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         deleteConstraint: (constraint, value) => {
             dispatch(unselectDropdownItem(constraint, value))
         }
+
     }
 }
 
-const CreateStudy = connect(
+const EditStudy = connect(
     mapStateToProps,
     mapDispatchToProps
-) (CreateStudyForm)
+) (EditStudyForm)
 
-export default withRouter(CreateStudy)
+export default withRouter(EditStudy)

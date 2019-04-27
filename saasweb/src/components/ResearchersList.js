@@ -14,10 +14,14 @@ const ResearchersList = ({onClick, loading, researchers, selected, currentUser, 
         <ListGroup className="flex-column" >
             {!!researchers && !!currentUser && (currentUser.role === ADMIN) && Object.keys(researchers).map(key=> (
                 currentUser.uid !== key && (
-                    <ListGroupItem active={key===selected ? true : false} tag="button" color="info" action onClick={() => {
+                    <ListGroupItem className="d-flex justify-content-between" active={key===selected ? true : false} tag="button" color="info" action onClick={() => {
                         onClick(key)
                     }}>
-                        {researchers[key].firstName + ' ' + researchers[key].lastName + '\n' + researchers[key].affiliation + ' '}
+                        <span className="d-flex align-items-left flex-column">
+                            <h5 className="mb-0">{researchers[key].firstName + ' ' + researchers[key].lastName}</h5>
+                            <p className="mb-0">{researchers[key].affiliation}</p>
+                            <p className="mb-0">{researchers[key].email}</p>
+                        </span>
                         <Badge color={colorMap[researchers[key].role]}>{researchers[key].role}</Badge>
                     </ListGroupItem>
                 )

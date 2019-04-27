@@ -1,6 +1,6 @@
 import {connect} from 'react-redux'
 import InputEmail from '../components/InputEmail'
-import {formChange} from '../actions/formActions'
+import {formChange, setModal, clearForm} from '../actions/formActions'
 import {addResearcherToStudy} from '../actions/studyActions'
 
 Object.filter = (obj, predicate) => 
@@ -24,7 +24,8 @@ const mapStateToProps = state => {
         error: state.studies.error,
         emailNotExist: doesEmailExist(state.researchers.members, state.form.email),
         researchers: state.researchers.members,
-        study: !!state.studies.selected ? state.studies.selected : ''
+        study: !!state.studies.selected ? state.studies.selected : '',
+        showModal: state.form.showModal
     }
 }
 
@@ -35,6 +36,12 @@ const mapDispatchToProps = dispatch => {
         },
         onChange: (field, value, researchers) => {
             dispatch(formChange(field, value))
+        },
+        setModal: (value) => {
+            dispatch(setModal(value))
+        },
+        clearForm: () => {
+            dispatch(clearForm())
         }
     }
 }

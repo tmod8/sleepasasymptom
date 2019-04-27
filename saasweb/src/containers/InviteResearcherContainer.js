@@ -1,6 +1,6 @@
 import {connect} from 'react-redux'
-import {formChange} from '../actions/formActions'
-import {inviteResearcher, hasAnAccount} from '../actions/authActions'
+import {formChange, setModal, clearForm, validate} from '../actions/formActions'
+import {inviteResearcher} from '../actions/authActions'
 import InviteResearcher from '../components/InviteResearcher';
 
 const exist = (researchers, email) => {
@@ -13,7 +13,9 @@ const mapStateToProps = state => {
         email: state.form.email,
         error: state.auth.error,
         researcherExists: exist(state.researchers.members, state.form.email),
-        researchers: state.researchers.members
+        researchers: state.researchers.members,
+        showModal: state.form.showModal,
+        isInvalid: state.formVal
     }
 }
 
@@ -23,8 +25,17 @@ const mapDispatchToProps = dispatch => {
             dispatch(inviteResearcher(email))
         },
         onChange: (field, value, researchers) => {
-            dispatch(formChange(field, value))
-           // exist(researchers, value)
+           dispatch(formChange(field, value))
+           //exist(researchers, value)
+        },
+        setModal: (value) => {
+            dispatch(setModal(value))
+        },
+        clearForm: () => {
+            dispatch(clearForm())
+        },
+        validate: (field, value) => {
+            dispatch(validate(field, value))
         }
     }
 }

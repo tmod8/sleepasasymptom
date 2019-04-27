@@ -1,13 +1,14 @@
 import React from 'react'
 import {
     ListGroup,
-    Spinner
+    Spinner,
+    Button
 } from 'reactstrap'
 import PropTypes from 'prop-types'
 import Researcher from './Researcher'
 import InputEmailContainer from '../containers/InputEmailContainer'
 
-const StudyResearchersList = ({loading, researchers, owner}) => (
+const StudyResearchersList = ({removeResearcher, loading, researchers, owner, studyId}) => (
     <>
         {loading && <div>Loading...<Spinner color="secondary" /></div>}
         {!!owner && (
@@ -19,7 +20,7 @@ const StudyResearchersList = ({loading, researchers, owner}) => (
         )}
         <ListGroup className="flex-column">
             {!!researchers &&  (Object.keys(researchers).map(key =>
-                <Researcher key={researchers[key].uid} {...{researcherInfo: {researcher: researchers[key], owner}}} />
+                <Researcher key={researchers[key].uid} {...{researcherInfo: {researcher: researchers[key], owner, removeResearcher, studyId}}} />
             ))}
         </ListGroup>
     </>
