@@ -1,7 +1,8 @@
 import {connect} from 'react-redux'
 import StudiesList from '../components/StudiesList'
 import * as ROLES from '../constants/roles'
-import {selectStudy} from '../actions/studyActions'
+import {selectStudy, changeStatus} from '../actions/studyActions'
+import {fetchData} from '../actions/healthDataActions'
 
 Object.filter = (obj, predicate) => 
     Object.keys(obj)
@@ -20,6 +21,19 @@ const filterStudies = (studies, role, user) => {
     }
 }
 
+const _MS_PER_DAY = 1000 * 60 * 60 * 24
+const calculateLifetime = (date) => {
+    var str = date.split(" ")
+    var newDate = new Date(str[1])
+    var dateUtc = Date.UTC(newDate.getUTCFullYear(), newDate.getUTCMonth(), newDate.getUTCDate())
+    var today = new Date();
+    var todayUTC = Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate())
+    var diff = (todayUTC - dateUtc) / _MS_PER_DAY
+    return diff
+}
+
+
+
 const getCurrentUser = state => {
     return (
         state.researchers.members[state.auth.uid]===undefined ? 
@@ -37,7 +51,15 @@ const mapStateToProps = state => {
         :
             state.studies.members.length===0 ? null : filterStudies(state.studies.members, getCurrentUser(state).role, state.auth.uid),
         selected: state.studies.selected===undefined ? '' : state.studies.selected,
-        currentUser: getCurrentUser(state)
+        currentUser: getCurrentUser(state),
+        colorMap: {
+            inactive: "info",
+            active: "success",
+            suspended: "warning",
+            terminated: "danger",
+            concluded: "secondary"
+        },
+        participants: !!state.studies.selected ? state.studies.members[state.studies.selected].participants : {}
     }
 }
 
@@ -45,6 +67,15 @@ const mapDispatchToProps = dispatch => {
     return {
         onClick: (study) => {
             dispatch(selectStudy(study))
+        },
+        calculateLifetime: (date) => {
+            return calculateLifetime(date)
+        },
+        fetchDataForExport: (users) => {
+            dispatch(fetchData(users))
+        },
+        changeStatus: (study, status) => {
+            dispatch(changeStatus(study, status))
         }
     }
 }

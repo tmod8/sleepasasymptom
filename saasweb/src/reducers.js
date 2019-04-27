@@ -1,6 +1,12 @@
 import { combineReducers } from 'redux'
 import * as ACTION from './constants/actionTypes'
 import {initialState} from './store'
+import {AGE} from './constants/constraints'
+
+Object.filter = (obj, predicate) => 
+    Object.keys(obj)
+        .filter( key => predicate(obj[key]) )
+        .reduce( (res, key) => (res[key] = obj[key], res), {} )
 
 function formVal(
     state = {
@@ -65,11 +71,20 @@ function form(
         selectedDropdown: '',
         minAge: 0,
         maxAge: 0,
-        informedConsent: null
+        informedConsent: null,
+        showModal: false,
+        formUrl: null
     },
     action
 ) {
     switch(action.type) {
+        case ACTION.INITIALIZE_EDIT_STUDY:
+            return Object.assign({}, state, {
+                studyName: action.studyName,
+                description: action.description,
+                constraints: action.constraints,
+                isEditing: true
+            })
         case ACTION.FORM_CHANGE:
             return Object.assign({}, state, {
                 [action.field]: action.value
@@ -89,18 +104,17 @@ function form(
                 selectedDropdown: '',
                 minAge: 0,
                 maxAge: 0,
-                informedConsent: null
+                informedConsent: null,
+                showModal: false,
+                formUrl: null
             })
         case ACTION.EDIT:
             return Object.assign({}, state, {
-                isEditing: true
-            })
-        case ACTION.INITIALIZE_PROFILE:
-            return Object.assign({}, state, {
-                email: action.info.email,
-                firstName: action.info.firstName,
-                lastName: action.info.lastName,
-                affiliation: action.info.affiliation
+                isEditing: true,
+                email: action.email,
+                firstName: action.firstName,
+                lastName: action.lastName,
+                affiliation: action.affiliation
             })
         case ACTION.SELECT_DROPDOWN_ITEM:
             return Object.assign({}, state, {
@@ -117,6 +131,20 @@ function form(
                     }
                 }
             }
+        case ACTION.SET_CONSENT:
+            return Object.assign({}, state, {
+                formUrl: action.url
+            })
+        case ACTION.UNSELECT_CONSTRAINT:
+           
+            return {
+                ...state,
+                constraints: {
+                    ...state.constraints,
+                    [action.constraint]: Object.filter(state.constraints[action.constraint], constraint => constraint === action.value)
+                }
+            }
+            
         case ACTION.ADD_AGE_CONSTRAINT:
             return {
                 ...state,
@@ -131,6 +159,10 @@ function form(
         case ACTION.CLEAR_CONSTRAINT:
             return Object.assign({}, state, {
                 selectedDropdown: ''
+            })
+        case ACTION.SET_MODAL:
+            return Object.assign({}, state, {
+                showModal: action.value
             })
         default:
             return state
@@ -224,11 +256,41 @@ function researchers(
                             ...state.members[action.uid],
                             firstName: action.profile.firstName,
                             lastName: action.profile.lastName,
-                            affiliation: action.profile.lastName
+                            affiliation: action.profile.affiliation
                         }
                     }
                 }
             default: 
+                return state
+        }
+    }
+
+    function healthData(
+        state = {
+            isFetching: false,
+            didInvalidate: false,
+            error: null,
+            members: {}
+        },
+        action
+    ) {
+        switch(action.type) {
+            case ACTION.INVALIDATE_HEALTH_DATA:
+                return Object.assign({}, state, {
+                    didInvalidate: true
+                })
+            case ACTION.REQUEST_HEALTH_DATA:
+                return Object.assign({}, state, {
+                    isFetching: true,
+                    didInvalidate: false
+                })
+            case ACTION.RECEIVE_HEALTH_DATA:
+                return Object.assign({}, state, {
+                    isFetching: false,
+                    didInvalidate: false,
+                    members: action.members
+                })
+            default:
                 return state
         }
     }
@@ -266,16 +328,44 @@ function researchers(
                         members: action.members,
                         selected: ''
                     })
+                case ACTION.CHANGE_STATUS:
+                    return {
+                        ...state,
+                        members: {
+                            ...state.members,
+                            [action.study]: {
+                                ...state.members[action.study],
+                                status: action.status
+                            } 
+                        }
+                    }
                 case ACTION.ADD_RESEARCHER_TO_STUDY:
                     return {
                         ...state,
                         members: {
+                            ...state.members,
                             [action.studyId]: {
                                 ...state.members[action.studyId],
                                 researchers: {
                                     ...state.members[action.studyId].researchers,
                                     [action.researcher]: true
                                 }
+                            }
+                        }
+                    }
+                case ACTION.REMOVE_RESEARCHER_FROM_STUDY:
+                    var filteredKeys = Object.keys(state.members[action.studyId].researchers).filter(key => key !== action.researcher)
+                    var object = {}
+                    filteredKeys.map(key => {
+                        Object.assign(object, {[key]: true})
+                    })
+                    return {
+                        ...state,
+                        members: {
+                            ...state.members,
+                            [action.studyId]: {
+                                ...state.members[action.studyId],
+                                researchers: object
                             }
                         }
                     }
@@ -291,7 +381,8 @@ function researchers(
         researchers,
         formVal,
         form,
-        studies
+        studies,
+        healthData
     })
 
     const rootReducer = (state, action) => {

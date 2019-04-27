@@ -101,7 +101,6 @@ export function createResearcher(userInfo, uid, ownProps) {
             role: "researcher"
         })
         .then(() => {
-            console.log('guten')
             dispatch(clearForm())
             dispatch(fetchResearchersIfNeeded())
             dispatch(fetchStudiesIfNeeded())

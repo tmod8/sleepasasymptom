@@ -1,6 +1,8 @@
 import {connect} from 'react-redux'
 import MainPanel from '../components/MainPanel'
 import { withRouter } from 'react-router-dom';
+import {clearForm} from '../actions/formActions'
+
 
 var navStyle = { 
     padding: '15px', 
@@ -24,11 +26,19 @@ const mapStateToProps = state => {
     }
 }
 
+const mapDispatchToProps = dispatch => {
+    return {
+        clearForm: () => {
+            dispatch(clearForm())
+        }
+    }
+}
+
 
 
 const MainPanelContainer = connect(
     mapStateToProps,
-    null
+    mapDispatchToProps
 ) (MainPanel)
 
 export default withRouter(MainPanelContainer)

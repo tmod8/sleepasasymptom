@@ -1,10 +1,40 @@
 import * as ACTION from '../constants/actionTypes'
 
+export function setModal(value) {
+    return {
+        type: ACTION.SET_MODAL,
+        value
+    }
+}
+
+export function initializeEditStudy(info) {
+    return {
+        type: ACTION.INITIALIZE_EDIT_STUDY,
+        studyName: info.studyName,
+        description: info.description,
+        constraints: info.constraints
+    }
+}
+
+export function setConsent(url) {
+    return {
+        type: ACTION.SET_CONSENT,
+        url
+    }
+}
+
 export function selectDropdownItem(item) {
-    console.log(item)
     return {
         type: ACTION.SELECT_DROPDOWN_ITEM,
         item
+    }
+}
+
+export function unselectDropdownItem(constraint, value) {
+    return {
+        type: ACTION.UNSELECT_CONSTRAINT,
+        constraint,
+        value
     }
 }
 
@@ -14,9 +44,13 @@ export function clearConstraint() {
     }
 }
 
-export function editForm() {
+export function editForm(info) {
     return {
-        type: ACTION.EDIT
+        type: ACTION.EDIT,
+        firstName: info.firstName,
+        lastName: info.lastName,
+        affiliation: info.affiliation,
+        email: info.email
     }
 }
 
@@ -51,12 +85,6 @@ export function clearForm() {
     }
 }
 
-export function initializeProfile(info) {
-    return {
-        type: ACTION.INITIALIZE_PROFILE,
-        info
-    }
-}
 
 /*
 you can optionally add a second field to compare against value i.e. confirmPassword

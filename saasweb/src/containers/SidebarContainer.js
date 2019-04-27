@@ -1,6 +1,5 @@
 import {connect} from 'react-redux'
 import Sidebar from '../components/Sidebar'
-import {goToCreateStudy} from '../actions/redirectActions'
 import { withRouter } from 'react-router-dom';
 
 /*
@@ -13,25 +12,14 @@ import { withRouter } from 'react-router-dom';
 */
 const mapStateToProps = state => {
     return {
-        user: !!state.researchers.members ? state.researchers.members[state.auth.uid] : {},
-        selectedUser: !!state.studies.members ?
-            state.studies.members[state.studies.selected]!==undefined ? state.studies.members[state.studies.selected] : {}
-        :
-            {}
-    }
-}
-
-const mapDispatchToProps = (dispatch, ownProps) => {
-    return {
-        onClick: () => {
-            dispatch(goToCreateStudy(ownProps))
-        }
+        user: !!state.researchers.members ? state.researchers.members[state.auth.uid] : {}
+        
     }
 }
 
 const SidebarContainer = connect(
     mapStateToProps,
-    mapDispatchToProps
+    null
 ) (Sidebar)
 
 export default withRouter(SidebarContainer)

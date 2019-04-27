@@ -3,12 +3,38 @@ import {studiesRef} from '../firebase'
 import {storageRef} from '../firebase'
 import {addResearcher} from './researcherActions'
 import {goToStudiesList} from './redirectActions'
+import * as STATUS from '../constants/status'
 
 //the user selects a study in the view study list
 export function selectStudy(study) {
     return {
         type: ACTION.SELECT_STUDY,
         study
+    }
+}
+
+function removeResearcher(studyId, researcher) {
+    return {
+        type: ACTION.REMOVE_RESEARCHER_FROM_STUDY,
+        studyId,
+        researcher
+    }
+} 
+
+function changeStudyStatus(study, status) {
+    return {
+        type: ACTION.CHANGE_STATUS,
+        study,
+        status
+    }
+}
+
+export function changeStatus(study, status) {
+    return dispatch => {
+        studiesRef.child(study + '/status').set(status)
+        .then(() => {
+            dispatch(changeStudyStatus(study, status))
+        })
     }
 }
 
@@ -71,8 +97,8 @@ export function createStudy(studyInfo, date, uid, ownProps) {
         studiesRef.child(studyId).set({
             studyName: studyInfo.studyName,
             description: studyInfo.description,
-            date_created: date,
-            status: "active",
+            dateCreated: date,
+            status: STATUS.ACTIVE,
             owner: uid,
             researchers: {
                 [uid]: true
@@ -81,9 +107,26 @@ export function createStudy(studyInfo, date, uid, ownProps) {
         })
         .then(() => {
             if (!!studyInfo.informedConsent) {
-                console.log(studyInfo.informedConsent)
                 storageRef.child('informedConsent/' + studyId).put(studyInfo.informedConsent)
                 
+            }
+            dispatch(invalidateStudies())
+            dispatch(fetchStudies())
+            dispatch(goToStudiesList(ownProps))
+        })
+    }
+}
+
+export function editStudy(studyInfo, ownProps) {
+    return dispatch => {
+        studiesRef.child(studyInfo.id).update({
+            studyName: studyInfo.studyName,
+            description: studyInfo.description,
+            constraints: studyInfo.constraints
+        })
+        .then(() => {
+            if (!!studyInfo.informedConsent) {
+                storageRef.child('informedConsent/' + studyInfo.id).put(studyInfo.informedConsent)
             }
             dispatch(invalidateStudies())
             dispatch(fetchStudies())
@@ -97,6 +140,15 @@ export function addResearcherToStudy(studyId, researcher) {
         studiesRef.child(studyId + "/researchers/" + researcher).set(true)
         .then(() => {
             dispatch(addResearcher(studyId, researcher))
+        })
+    }
+}
+
+export function removeResearcherFromStudy(studyId, researcher) {
+    return dispatch => {
+        studiesRef.child(studyId + "/researchers/" + researcher).remove()
+        .then(() => {
+            dispatch(removeResearcher(studyId, researcher))
         })
     }
 }
